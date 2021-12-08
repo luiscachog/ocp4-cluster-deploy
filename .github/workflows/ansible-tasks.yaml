@@ -48,4 +48,5 @@ jobs:
         run: |
           cp ocp-artifact/auth/kubeconfig $GITHUB_WORKSPACE/kubeconfig
           export KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig
+          ansible --version
           ansible-playbook ansible-tasks/main.yaml
