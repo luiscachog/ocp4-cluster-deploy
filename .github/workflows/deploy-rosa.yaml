@@ -34,7 +34,7 @@ jobs:
       - name: Create ROSA cluster with STS
         run: |
           /usr/local/bin/rosa create account-roles --region ${{ env.AWS_REGION }} --mode auto -y
-          /usr/local/bin/rosa create cluster --cluster-name ${OCP_CLUSTER_NAME} --region ${{ env.AWS_REGION }} --multi-az --version ${OCP_CLUSTER_VERSION} --channel-group stable --enable-autoscaling --min-replicas 3 --max-replicas 6 --private-link --sts --mode auto
+          /usr/local/bin/rosa create cluster --cluster-name ${OCP_CLUSTER_NAME} --region ${{ env.AWS_REGION }} --multi-az --version ${OCP_CLUSTER_VERSION} --channel-group stable --enable-autoscaling --min-replicas 3 --max-replicas 6 --private-link --sts --mode auto -y
           /usr/local/bin/rosa logs install --cluster ${OCP_CLUSTER_NAME} --watch
 
       - name: Save Artifacts
