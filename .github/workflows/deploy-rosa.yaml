@@ -1,0 +1,44 @@
+name: Deploy ROSA cluster
+on:
+  push:
+    branches:
+      - 'main'
+  workflow_dispatch:
+
+env:
+  OCP_CLUSTER_NAME: rosa-cluster-1    # Limit to 15 characters and just use "-" and numbers
+  OCP_CLUSTER_VERSION: 4.10.11
+  AWS_REGION: us-east-2
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  RED_HAT_ROSA_TOKEN: ${{ secrets.RED_HAT_ROSA_TOKEN }}
+
+jobs:
+  Setup:
+    name: Setup OpenShift ROSA Binary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - name: Setup Working Directory for OCP Install
+        run: |
+          wget -O rosa.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/rosa/latest/rosa-linux.tar.gz
+          tar -xvf rosa.tar.gz
+          mv rosa /usr/local/bin
+          python -m pip install awscli
+
+      - name: Init ROSA
+        run: |
+          /usr/local/bin/rosa login --token="$RED_HAT_ROSA_TOKEN"
+          /usr/local/bin/rosa init --region ${{ env.AWS_REGION }}
+
+      - name: Create ROSA cluster with STS
+        run: |
+          /usr/local/bin/rosa create account-roles --region ${{ env.AWS_REGION }} --mode auto -y
+          /usr/local/bin/rosa create cluster --cluster-name ${OCP_CLUSTER_NAME} --region ${{ env.AWS_REGION }} --multi-az --version ${OCP_CLUSTER_VERSION} --channel-group stable --enable-autoscaling --min-replicas 3 --max-replicas 6 --private-link --sts --mode auto
+          /usr/local/bin/rosa logs install --cluster ${OCP_CLUSTER_NAME} --watch
+
+      - name: Save Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ocp-artifacts
+          path: ocp-artifacts
