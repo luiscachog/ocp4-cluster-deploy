@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  OCP_CLUSTER_NAME: rosa-cluster-1    # Limit to 15 characters and just use "-" and numbers
+  OCP_CLUSTER_NAME: demo-cluster1    # Limit to 15 characters and just use "-" and numbers
   OCP_CLUSTER_VERSION: 4.10.11
   AWS_REGION: us-east-1
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
