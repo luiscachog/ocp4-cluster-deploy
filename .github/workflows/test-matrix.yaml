@@ -3,18 +3,21 @@ on:
   workflow_dispatch:
   
 env:
-  OCP_CLUSTER_NAME: rosa-5828n
   OCP_VERSION: 4.10.16
   AWS_REGION: us-east-1
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   RED_HAT_ROSA_TOKEN: ${{ secrets.RED_HAT_ROSA_TOKEN }}
+  
 
 jobs:
   job1:
     uses: ./.github/workflows/rosa-test.yaml
     secrets:
       RED_HAT_ROSA_TOKEN: ${{ secrets.RED_HAT_ROSA_TOKEN }}
+    env:
+      OCP_CLUSTER_NAME: ${{ env.ROSA_CLUSTER_NAME }}
+      
 
   create:
     strategy:

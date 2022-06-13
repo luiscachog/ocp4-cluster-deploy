@@ -8,12 +8,15 @@ on:
     outputs:
       rosa_api_url: 
         value: "${{ jobs.setup.outputs.rosa_url }}"
+      rosa_cluster_name:
+        value: "${{ jobs.setup.outputs.rosa_cluster_name }}"
+
     secrets:
       RED_HAT_ROSA_TOKEN:
         required: true
 
 env:
-  OCP_CLUSTER_NAME: ${{ secrets.OCP_CLUSTER_NAME }}    # Limit to 15 characters and just use "-" and numbers
+  OCP_CLUSTER_NAME: rosa-5828n
   OCP_CLUSTER_VERSION: 4.10.11
   AWS_REGION: us-east-1
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -43,7 +46,8 @@ jobs:
         run: |
           echo $(/usr/local/bin/rosa describe cluster -c ${{ env.OCP_CLUSTER_NAME}} | grep "API URL:" | awk '{print $3}') 
 
-      - name: Set output 
+      - name: Set outputs 
         id: step4
         run: |
           echo "::set-output name=rosa_url::$(rosa describe cluster -c ${{ env.OCP_CLUSTER_NAME }} | grep "API URL:" | awk '{print $3}')"
+          echo "::set-output name=rosa_cluster_name::${{ env.OCP_CLUSTER_NAME }}"
