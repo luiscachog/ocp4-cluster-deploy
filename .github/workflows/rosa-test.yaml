@@ -34,7 +34,7 @@ jobs:
 
       - name: Init ROSA
         run: |
-          /usr/local/bin/rosa login --token="$RED_HAT_ROSA_TOKEN"
+          /usr/local/bin/rosa login --token=${{ env.RED_HAT_ROSA_TOKEN }}
 
       - name: Get ROSA cluster URL
         run: |
