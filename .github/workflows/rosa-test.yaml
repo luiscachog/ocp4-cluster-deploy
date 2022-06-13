@@ -4,6 +4,10 @@ on:
     branches:
       - 'main'
   workflow_dispatch:
+    outputs:
+      rosa_api_url: 
+        description: ROSA API URL
+        value: ${{ jobs.Setup.outputs.rosa_api_url }}
 
 env:
   OCP_CLUSTER_NAME: ${{ secrets.OCP_CLUSTER_NAME }}    # Limit to 15 characters and just use "-" and numbers

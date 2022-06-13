@@ -7,12 +7,15 @@ env:
   OCP_VERSION: 4.10.16
 
 jobs:
+  job1:
+    uses: .github/workflows/rosa-test.yaml@v1
+
   create:
     strategy:
       matrix:
         include:
           - environment: rosa
-            url: ${{ jobs.Setup.step4.rosa_api_url }}
+            url: ${{ needs.job1.outputs.rosa_api_url }}
             user: ROSA_OCP_CLUSTER_USER
             password: ROSA_OCP_CLUSTER_PASSWORD
     env:
