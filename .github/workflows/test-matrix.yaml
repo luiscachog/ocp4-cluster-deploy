@@ -8,7 +8,7 @@ env:
 
 jobs:
   job1:
-    uses: ./.github/workflows/rosa-test.yaml@v1
+    uses: ./.github/workflows/rosa-test.yaml@main
 
   create:
     strategy:
