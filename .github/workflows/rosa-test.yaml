@@ -1,0 +1,42 @@
+name: Get ROSA URL
+on:
+  push:
+    branches:
+      - 'main'
+  workflow_dispatch:
+
+env:
+  OCP_CLUSTER_NAME: ${{ secrets.OCP_CLUSTER_NAME }}    # Limit to 15 characters and just use "-" and numbers
+  OCP_CLUSTER_VERSION: 4.10.11
+  AWS_REGION: us-east-1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  RED_HAT_ROSA_TOKEN: ${{ secrets.RED_HAT_ROSA_TOKEN }}
+
+jobs:
+  Setup:
+    name: Setup OpenShift ROSA Binary
+    runs-on: ubuntu-latest
+    outputs:
+      rosa_api_url: ${{ steps.step4.outputs.rosa_api_url }}
+    steps:
+      - uses: actions/checkout@main
+      - name: Setup Working Directory for OCP Install
+        run: |
+          wget -O rosa.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/rosa/latest/rosa-linux.tar.gz
+          tar -xvf rosa.tar.gz
+          mv rosa /usr/local/bin
+          python -m pip install awscli
+
+      - name: Init ROSA
+        run: |
+          /usr/local/bin/rosa login --token="$RED_HAT_ROSA_TOKEN"
+
+      - name: Get ROSA cluster URL
+        run: |
+          echo $(/usr/local/bin/rosa describe cluster -c ${{ env.OCP_CLUSTER_NAME}} | grep "API URL:" | awk '{print $3}') 
+
+      - name: Set output 
+        id: step4
+        run: |
+          echo "::set-output name=rosa_api_url::$(rosa describe cluster -c ${{ env.OCP_CLUSTER_NAME }} | grep "API URL:" | awk '{print $3}')"
