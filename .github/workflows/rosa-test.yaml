@@ -6,8 +6,7 @@ on:
   workflow_dispatch:
     outputs:
       rosa_api_url: 
-        description: ROSA API URL
-        value: ${{ jobs.setup.outputs.rosa_api_url }}
+        value: ${{ jobs.setup.outputs.rosa_url }}
 
 env:
   OCP_CLUSTER_NAME: ${{ secrets.OCP_CLUSTER_NAME }}    # Limit to 15 characters and just use "-" and numbers
@@ -22,7 +21,7 @@ jobs:
     name: Setup OpenShift ROSA Binary
     runs-on: ubuntu-latest
     outputs:
-      rosa_api_url: ${{ steps.step4.outputs.rosa_api_url }}
+      rosa_url: ${{ steps.step4.outputs.rosa_url }}
     steps:
       - uses: actions/checkout@main
       - name: Setup Working Directory for OCP Install
@@ -43,4 +42,4 @@ jobs:
       - name: Set output 
         id: step4
         run: |
-          echo "::set-output name=rosa_api_url::$(rosa describe cluster -c ${{ env.OCP_CLUSTER_NAME }} | grep "API URL:" | awk '{print $3}')"
+          echo "::set-output name=rosa_url::$(rosa describe cluster -c ${{ env.OCP_CLUSTER_NAME }} | grep "API URL:" | awk '{print $3}')"
