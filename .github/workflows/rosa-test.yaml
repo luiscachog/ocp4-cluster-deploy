@@ -8,6 +8,9 @@ on:
     outputs:
       rosa_api_url: 
         value: "${{ jobs.setup.outputs.rosa_url }}"
+    secrets:
+      RED_HAT_ROSA_TOKEN:
+        required: true
 
 env:
   OCP_CLUSTER_NAME: ${{ secrets.OCP_CLUSTER_NAME }}    # Limit to 15 characters and just use "-" and numbers
