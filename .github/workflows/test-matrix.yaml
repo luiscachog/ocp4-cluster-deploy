@@ -13,7 +13,7 @@ env:
 jobs:
   job1:
     uses: ./.github/workflows/rosa-test.yaml
-    env:
+    with:
       RED_HAT_ROSA_TOKEN: ${{ secrets.RED_HAT_ROSA_TOKEN }}
 
   create:
