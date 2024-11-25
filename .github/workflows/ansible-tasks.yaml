@@ -22,7 +22,7 @@ jobs:
           path: ansible-tasks
 
       - name: Download Artifacts from Cluster Deploy
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v6
         with:
           workflow: deploy.yaml
           name: ocp-artifact
